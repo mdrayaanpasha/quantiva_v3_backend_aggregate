@@ -4,25 +4,24 @@ services:
   redis:
     image: redis:alpine
     container_name: quantiva_redis
-    ports:
-      - "6379:6379"
+    # ports removed to secure redis from external access
     restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: quantiva_rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672" # Management UI
+      - "15672:15672" # Management UI exposed for you to monitor queues
+    # 5672 (AMQP port) removed to secure against external workers
     restart: unless-stopped
 
   service1:
     build: 
       context: ./QUANTIVA_3.0_SERVICE_1
-      dockerfile: dockerfile # lowercase 'd' as it is in the directory
+      dockerfile: dockerfile
     container_name: quantiva_s1
     ports:
-      - "3001:3000"
+      - "3001:3000" # ONLY the API Gateway is exposed to the internet
     environment:
       - PORT=3000
       - REDIS_KEY=redis://redis:6379
@@ -37,8 +36,7 @@ services:
       context: ./QUANTIVA_3.0_SERVICE_2
       dockerfile: Dockerfile
     container_name: quantiva_s2
-    ports:
-      - "3002:3000"
+    # ports removed to secure the worker from external access
     environment:
       - PORT=3000
       - REDIS_KEY=redis://redis:6379
@@ -53,8 +51,7 @@ services:
       context: ./QUANTIVA_3.0_SERVICE_3
       dockerfile: Dockerfile
     container_name: quantiva_s3
-    ports:
-      - "3003:3000"
+    # ports removed to secure the worker from external access
     environment:
       - PORT=3000
       - REDIS_KEY=redis://redis:6379
@@ -69,8 +66,7 @@ services:
       context: ./QUANTIVA_3.0_SERVICE_4
       dockerfile: Dockerfile
     container_name: quantiva_s4
-    ports:
-      - "3004:3000"
+    # ports removed to secure the worker from external access
     environment:
       - PORT=3000
       - REDIS_KEY=redis://redis:6379
