@@ -21,7 +21,7 @@ services:
       dockerfile: dockerfile
     container_name: quantiva_s1
     ports:
-      - "3001:3000" # ONLY the API Gateway is exposed to the internet
+      - "80:3000" # ONLY the API Gateway is exposed to the internet on standard HTTP port 80
     environment:
       - PORT=3000
       - REDIS_KEY=redis://redis:6379
